@@ -1,31 +1,52 @@
-from huggingface_hub.utils import RepositoryNotFoundError, HfHubHTTPError
-from huggingface_hub import HfApi, create_repo
+from huggingface_hub import HfApi, create_repo, RepositoryNotFoundError
 import os
 
-
+# Variables
 repo_id = "Jagadesswar/tourism-prediction"
-repo_type = "dataset"
+repo_type = "dataset"  # Can be "model" or "dataset" depending on your use case
+hf_token = os.getenv("HF_TOKEN")  # Ensure this is set in the environment
 
-hf_token = os.getenv("HF_TOKEN")
-login(token=hf_token)
+if not hf_token:
+    print("❌ Error: HF_TOKEN environment variable is not set.")
+    exit(1)
 
-# Initialize API client
+# Initialize Hugging Face API client
 api = HfApi()
-print("✅ Logged into HuggingFace successfully.\n")
 
+# Login to Hugging Face Hub using token
+try:
+    api.set_access_token(hf_token)  # Authenticate using the token
+    print("✅ Logged into HuggingFace successfully.")
+except Exception as e:
+    print(f"❌ Error logging in to HuggingFace: {e}")
+    exit(1)
 
-
-# Step 1: Check if the space exists
+# Step 1: Check if the repo exists
 try:
     api.repo_info(repo_id=repo_id, repo_type=repo_type)
-    print(f"Space '{repo_id}' already exists. Using it.")
+    print(f"Repository '{repo_id}' already exists. Using it.")
 except RepositoryNotFoundError:
-    print(f"Space '{repo_id}' not found. Creating new space...")
-    create_repo(repo_id=repo_id, repo_type=repo_type, private=False)
-    print(f"Space '{repo_id}' created.")
+    print(f"Repository '{repo_id}' not found. Creating new repository...")
+    try:
+        create_repo(repo_id=repo_id, repo_type=repo_type, private=False)
+        print(f"Repository '{repo_id}' created.")
+    except Exception as e:
+        print(f"❌ Error creating the repository: {e}")
+        exit(1)
 
-api.upload_folder(
-    folder_path="tourism_project/data",
-    repo_id=repo_id,
-    repo_type=repo_type,
-)
+# Step 2: Upload the folder to Hugging Face Hub
+folder_path = "tourism_project/data"  # Ensure this path is correct and relative to your script
+
+# Check if the folder exists before uploading
+if os.path.exists(folder_path):
+    try:
+        api.upload_folder(
+            folder_path=folder_path,
+            repo_id=repo_id,
+            repo_type=repo_type,
+        )
+        print(f"✅ Folder '{folder_path}' uploaded to Hugging Face successfully.")
+    except Exception as e:
+        print(f"❌ Error uploading folder to Hugging Face: {e}")
+else:
+    print(f"❌ Folder '{folder_path}' does not exist.")
