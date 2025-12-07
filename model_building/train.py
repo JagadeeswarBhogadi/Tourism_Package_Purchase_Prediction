@@ -68,7 +68,7 @@ ytest = pd.read_csv(ytest_path).values.ravel()
 
 print("✅ Datasets loaded successfully.")
 
-Xtrain.drop(columns=["CustomerID","Unnamed: 0"], inplace=True)
+
 
 categorical_cols = Xtrain.select_dtypes(include=["object"]).columns.tolist()
 num_cols = Xtrain.select_dtypes(exclude=["object"]).columns.tolist()
