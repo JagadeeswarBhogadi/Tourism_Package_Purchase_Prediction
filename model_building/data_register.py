@@ -4,22 +4,23 @@ import os
 # Variables
 repo_id = "Jagadesswar/tourism-prediction"
 repo_type = "dataset"  # Can be "model" or "dataset" depending on your use case
-hf_token = os.getenv("HF_TOKEN")  # Ensure this is set in the environment
+# Retrieve Hugging Face token from environment variable
+hf_token = os.getenv("HF_TOKEN")
 
 if not hf_token:
     print("❌ Error: HF_TOKEN environment variable is not set.")
     exit(1)
 
-# Initialize Hugging Face API client
-api = HfApi()
-
 # Login to Hugging Face Hub using token
 try:
-    api.set_access_token(hf_token)  # Authenticate using the token
+    login(token=hf_token)  # Login using the token
     print("✅ Logged into HuggingFace successfully.")
 except Exception as e:
     print(f"❌ Error logging in to HuggingFace: {e}")
     exit(1)
+
+# Initialize the API client
+api = HfApi()
 
 # Step 1: Check if the repo exists
 try:
