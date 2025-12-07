@@ -1,4 +1,4 @@
-from huggingface_hub import HfApi, create_repo, RepositoryNotFoundError
+from huggingface_hub import HfApi, create_repo
 import os
 
 # Variables
