@@ -78,4 +78,4 @@ if st.button("Predict"):
         st.success("🎉 The customer is likely to purchase the product!")
     else:
         st.write("🎯 Final Prediction:", prediction)
-        st.warning("❌ The customer is unlikely to purchase the product")
+        st.warning("❌ The customer is unlikely to purchase the product!")
